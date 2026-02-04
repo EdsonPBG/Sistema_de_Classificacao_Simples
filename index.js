@@ -1,49 +1,81 @@
 const prompt = require('prompt-sync')();
 
-let soma = 0;
-let media = 0;
-let cont_aprovado = 0;
-let cont_recuperacao = 0;
-let cont_reprovado = 0;
+let alunos = [];
+let proximoId = 1;
 
-const qtd_aluno = parseInt(prompt("Informe a quantidade de alunos(as) que tem na sala: "));
-console.log("-------------------------------------------------------");
-
-for (let i = 1; i <= qtd_aluno; i++) {
-
-    let notaAluno = parseFloat(prompt(`Informe a nota do(a) ${i}º aluno(a) (de 0 ate 10): `));
-
-    if (notaAluno < 0 || notaAluno > 10) 
-    {
-        console.log("Nota inválida. Digite um valor entre 0 e 10.");
-        i--;
-        continue; 
-    }  
-        soma = soma + notaAluno;
-    if (notaAluno >= 7.0) 
-    {
-        cont_aprovado = cont_aprovado + 1;
-        console.log("Aluno(a) aprovado");
-        console.log("-------------------------------------------------------");
-    } 
-    else if (notaAluno >= 5.0 && notaAluno < 7.0) 
-    {           
-        cont_recuperacao = cont_recuperacao + 1;
-        console.log("Aluno(a) em recuperação");
-        console.log("-------------------------------------------------------");
-    } 
-    else 
-    {
-    cont_reprovado = cont_reprovado + 1;
-    console.log("Aluno(a) Reprovado(a)");
-    console.log("-------------------------------------------------------");
+function validarNota (nota) {
+    if (nota < 0 || nota > 10) {
+        console.log("ERRO: Nota menor do que zero ou maior do que dez, tente novamente!");
+        return false;
     }
-} 
-    media = soma/qtd_aluno;
-    console.log(`A média da turma é: ${media.toFixed(2)}`);
-    console.log("-------------------------------------------------------");
-    console.log(`O total de alunos aprovados: ${cont_aprovado}`);
-    console.log("-------------------------------------------------------");
-    console.log(`O total de alunos em recuparação: ${cont_recuperacao}`);
-    console.log("-------------------------------------------------------");
-    console.log(`O total de alunos reprovados: ${cont_reprovado}`);
+    else {
+        return true;
+    }
+};
+
+function validarNome (nome) {
+    if (!nome || nome.trim().length < 2) {
+        console.log("ERRO: Nome invalido")
+        return false;
+    }
+    else {
+        return false;
+    }
+}
+
+function calcularStatus (nota) {
+        if (nota >= 7.0) {
+            return "Aprovado";
+        }
+        else if (nota >= 5.0 && nota < 7.0) {
+            return "Em Recuperacao";
+        }
+        else {
+            return "Reprovado";
+        }
+    };
+
+function cadastrarAlunos () {
+    let nome = String(prompt("Informe o nome do aluno: "));
+    if (!validarNome(nome)){
+        return;
+    }
+    let nota = Number(prompt("Informe a nota do aluno (0 a 10): "));
+    if (!validarNota(nota)){
+        return;
+    };
+
+    let status = calcularStatus(nota);
+
+        const aluno = {
+            id: proximoId,
+            name: nome,
+            nota: nota,
+            status: status
+        };
+
+        alunos.push(aluno);
+        proximoId++;
+
+        console.log("Aluno Cadastrado com sucesso!!");
+    };
+
+let opcao;
+do{
+console.log("-- Menu dos alunos --");
+console.log("");
+console.log("1. Cadastrar Aluno");
+console.log("0. sair");
+console.log("");
+    opcao = Number(prompt("Escolha um numero: "));
+
+    switch (opcao) {
+        case 1: 
+            cadastrarAlunos();
+        break;
+        case 0: 
+            console.log("Saindo...")
+        break;
+    };
+}
+while (opcao !== 0);
