@@ -13,16 +13,6 @@ function validarNota (nota) {
     }
 };
 
-function validarNome (nome) {
-    if (!nome || nome.trim().length < 2) {
-        console.log("ERRO: Nome invalido")
-        return false;
-    }
-    else {
-        return false;
-    }
-}
-
 function calcularStatus (nota) {
         if (nota >= 7.0) {
             return "Aprovado";
@@ -35,11 +25,21 @@ function calcularStatus (nota) {
         }
     };
 
+
+function listaAlunos () {
+    if (alunos.length == 0) {
+            console.log("Não existem alunos cadastrados, por favor, cadastre!");
+            return;
+        }
+    else {
+        for (let i = 0; i < alunos.length; i++) {
+                console.log(alunos[i]);
+        };  
+    };
+};
+
 function cadastrarAlunos () {
     let nome = String(prompt("Informe o nome do aluno: "));
-    if (!validarNome(nome)){
-        return;
-    }
     let nota = Number(prompt("Informe a nota do aluno (0 a 10): "));
     if (!validarNota(nota)){
         return;
@@ -65,17 +65,21 @@ do{
 console.log("-- Menu dos alunos --");
 console.log("");
 console.log("1. Cadastrar Aluno");
+console.log("2. Listar Alunos");
 console.log("0. sair");
 console.log("");
     opcao = Number(prompt("Escolha um numero: "));
 
     switch (opcao) {
         case 1: 
-            cadastrarAlunos();
-        break;
+                cadastrarAlunos();
+            break;
+        case 2:
+                listaAlunos();
+            break;
         case 0: 
-            console.log("Saindo...")
-        break;
+                console.log("Saindo...")
+            break;
     };
 }
 while (opcao !== 0);
