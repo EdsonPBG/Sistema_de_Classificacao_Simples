@@ -25,9 +25,9 @@ Este projeto está sendo construído de forma **progressiva**, dividido em dias 
 
 ## 📂 Estrutura do Projeto
 
-* Cadastro de alunos
+* CRUD completo de alunos em memória
 * Armazenamento em array de objetos
-* Menu interativo via terminal
+* Menu interativo via terminal (CLI)
 
 ---
 
@@ -53,6 +53,15 @@ Este projeto está sendo construído de forma **progressiva**, dividido em dias 
 * Busca de aluno por ID
 * Validação de existência do aluno
 
+### 🔹 Dia 4
+
+* Edição de aluno por ID
+  * Atualização de nome e nota
+  * Recalculo automático do status
+* Remoção de aluno por ID
+  * Confirmação antes da exclusão
+* Finalização do CRUD em memória (Create, Read, Update, Delete)
+
 ---
 
 ## 🚀 Como Executar o Projeto
@@ -71,10 +80,11 @@ Este projeto está sendo construído de forma **progressiva**, dividido em dias 
 
 ## 📌 Próximos Passos
 
-* Atualização e remoção de alunos
+* Refatoração e melhoria da organização do código
 * Melhorias nas validações
 * Persistência de dados
 * Evoluir para um sistema maior (ex: escola ou hospital)
+* Migração futura para API REST com Node.js/NestJS
 
 ---
 
