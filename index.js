@@ -18,12 +18,12 @@ function salvar () {
 function carregar () {
     try{
         let maiorId = 0;
-        let conteudo = fs.readFileSync("alunos.json", "utf-8");
         if (!fs.existsSync("alunos.json")) {
             alunos = [];
             proximoId = 1;
             return;
-        }
+        };
+        let conteudo = fs.readFileSync("alunos.json", "utf-8");
         if (conteudo.trim() === "") {
             alunos = [];
             proximoId = 1;
@@ -43,6 +43,13 @@ function carregar () {
     };
 };
 
+function validarNome (nome) {
+    if (nome.trim() === "" || nome.length < 3) {
+        console.log("Erro: Nome invalido! Tente novamente");
+        return false;
+    };
+        return true;
+};
 
 function validarNota (nota) { // Esta função tem o trabalho de validar se a nota esta entre 0 e 10, nada a mais nem a menos
     if (nota < 0 || nota > 10) {
@@ -81,108 +88,106 @@ function listaAlunos () { // Esta função verifica se existem alunos no array, 
     };
 };
 
+function encontrarAlunoPorId (id) {
+    for (let i = 0; i < alunos.length; i++) {
+        if (id === alunos[i].id) {
+            return alunos[i];
+        };
+    };
+            return null;
+};
+
 function buscarPorId () { // Esta função tem o trabalho de procurar o aluno pelo id informado.
-    let id_aluno = Number(prompt("Informe o ID do aluno para a busca: "));
-    let existe = false;
+    const id_aluno = Number(prompt("Informe o ID do aluno para a busca: "));
 
     if (alunos.length === 0) { // Verifica se existe aluno no array
             console.log("Não existem alunos cadastrados, por favor, cadastre!");
             return;
-        }
-    else { // Se existir, faz um loop e compara o id informado com o id do aluno e mostra o aluno com o id certo
-        for (let i = 0; i < alunos.length; i++) {
-                if (id_aluno === alunos[i].id) { 
-                    existe = true;
-                    console.log(`Aluno com o id: ${id_aluno} encontrado com sucesso!`);
-                    console.log("");
-                    console.log(alunos[i]);
-                };
-        };  
-            if (existe === false) { // Essa verificação serve para identificar que o aluno não foi encontrado ou id não existe
-                    console.log(`Aluno com o id: ${id_aluno} não encontrado! Tente novamente`);
-                    return;
-            };
+        };
+
+    const aluno = encontrarAlunoPorId(id_aluno);
+
+    if (!aluno) { // Essa verificação serve para identificar que o aluno não foi encontrado ou id não existe
+            console.log(`Aluno com o id: ${id_aluno} não encontrado! Tente novamente`);
+            return;
     };
+    console.log(aluno);
 };
 
 function editarPorId () { // Esta função tem o trabalho de editar o aluno procurando pelo id
-    let id_aluno = Number(prompt("Informe o ID do aluno para a edição: "));
-    let existe = false;
+    const id_aluno = Number(prompt("Informe o ID do aluno para a edição: "));
 
     if (alunos.length === 0) {
             console.log("Não existem alunos cadastrados, por favor, cadastre!");
             return;
         }
-    else { // se existir alunos no array, cria um loop que acha o aluno, mostra o aluno e permite fazer a edição do nome e da nota
-        for (let i = 0; i < alunos.length; i++) {
-                if (id_aluno === alunos[i].id) { 
-                    existe = true;
-                    console.log("");
-                    console.log("INFORMAÇÕES DO(A) ALUNO(A):");
-                    console.log(alunos[i]);
-                    console.log("");
-                    let resposta = prompt("DESEJA CONTINUAR COM A EDIÇÃO? (S/N) ");
 
-                    if (resposta === 's' || resposta === 'S') {
-                        let newName = prompt("Informe o novo nome: ");
-                        let newNota = Number(prompt("Informe a nova nota: "));
-                            if (!validarNota(newNota)) {
-                                return;
-                            };
-                        let newStatus = calcularStatus(newNota);
+    const aluno = encontrarAlunoPorId(id_aluno);
 
-                        alunos[i].name = newName;
-                        alunos[i].nota = newNota;
-                        alunos[i].status = newStatus;
-                        console.log("");
-                        console.log("Aluno Atualizado com sucesso!!");
-                        salvar(); //salva a edição
-                    };
-                };
-        };  
-            if (existe === false) {
-                    console.log(`Aluno com o id: ${id_aluno} não encontrado! Tente novamente`);
-                    return;
+    if (!aluno) { // Essa verificação serve para identificar que o aluno não foi encontrado ou id não existe
+            console.log(`Aluno com o id: ${id_aluno} não encontrado! Tente novamente`);
+            return;
+    };
+    console.log("");
+    console.log("INFORMAÇÕES DO(A) ALUNO(A):");
+    console.log(aluno);
+    console.log("");
+    let resposta = prompt("DESEJA CONTINUAR COM A EDIÇÃO? (S/N) ");
+    resposta = resposta.toLowerCase();
+    if (resposta === 's') {
+        let newName = prompt("Informe o novo nome: ");
+            if (!validarNome(newName)){
+                return;
             };
+        let newNota = Number(prompt("Informe a nova nota: "));
+            if (!validarNota(newNota)) {
+                return;
+            };
+        let newStatus = calcularStatus(newNota);
+    
+        aluno.name = newName;
+        aluno.nota = newNota;
+        aluno.status = newStatus;
+        console.log("");
+        console.log("Aluno Atualizado com sucesso!!");
+        salvar(); //salva a edição
     };
 };
 
 function removerPorId () {// Esta função serve para remover o aluno existente.
-    let id_aluno = Number(prompt("Informe o ID do aluno que deseja remover: "));
-    let existe = false;
+    const id_aluno = Number(prompt("Informe o ID do aluno que deseja remover: "));
 
     if (alunos.length === 0) {
         console.log("Não existem alunos cadastrados, por favor, cadastre!");
         return;
     }
-    else {// Se existir aluno cadastrado, mostra o aluno e pergunta se realmente quer excluir, se sim, o aluno é removido do array
-        for (let i = 0; i < alunos.length; i++) {
-                if (id_aluno === alunos[i].id) { 
-                    existe = true;
-                    console.log("");
-                    console.log("INFORMAÇÕES DO(A) ALUNO(A):");
-                    console.log(alunos[i]);
-                    let resposta = prompt("DESEJA CONTINUAR COM A EXCLUSÃO? (S/N) ");
 
-                    if (resposta === 's' || resposta === 'S') {
-                        alunos.splice(i, 1);
-                        console.log("");
-                        console.log("Aluno Removido com sucesso!!");
-                        salvar(); //salva a remoção
-                    };
-
-                    return;
-                };
-        };  
-            if (existe === false) {
-                    console.log(`Aluno com o id: ${id_aluno} não encontrado! Tente novamente`);
-                    return;
-            };
+    const aluno = encontrarAlunoPorId(id_aluno);
+    if (!aluno) {
+        console.log(`Aluno com o id: ${id_aluno} não encontrado! Tente novamente`);
+        return;
     };
-};
+    console.log("");
+    console.log("INFORMAÇÕES DO(A) ALUNO(A):");
+    console.log(aluno);
+    console.log("");
+    let resposta = prompt("DESEJA CONTINUAR COM A EXCLUSÃO? (S/N) ");
+    resposta = resposta.toLowerCase();
+
+    const indice = alunos.findIndex(a => a.id === id_aluno);
+    if (resposta === 's') {
+        alunos.splice(indice, 1);
+        console.log("");
+        console.log("Aluno Removido com sucesso!!");
+        salvar(); //salva a remoção
+    };
+};  
 
 function cadastrarAlunos () {
     let nome = String(prompt("Informe o nome do aluno: "));
+    if (!validarNome(nome)) {
+        return;
+    };
     let nota = Number(prompt("Informe a nota do aluno (0 a 10): "));
     if (!validarNota(nota)){
         return;
@@ -203,10 +208,9 @@ function cadastrarAlunos () {
         console.log("Aluno Cadastrado com sucesso!!");
         salvar(); // salvar o cadastro de alunos
     };
-
+carregar();
 let opcao;
 do{
-carregar();
 console.log("-- Menu dos alunos --");
 console.log("");
 console.log("1. Cadastrar Aluno");
