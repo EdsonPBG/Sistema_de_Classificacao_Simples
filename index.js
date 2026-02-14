@@ -44,7 +44,7 @@ function carregar () {
 };
 
 function validarNome (nome) {
-    if (nome.trim() === "" || nome.length < 3) {
+    if (nome.trim() === "" || !isNaN(nome) || nome.length < 3) {
         console.log("Erro: Nome invalido! Tente novamente");
         return false;
     };
@@ -134,6 +134,7 @@ function editarPorId () { // Esta função tem o trabalho de editar o aluno proc
     console.log("");
     let resposta = prompt("DESEJA CONTINUAR COM A EDIÇÃO? (S/N) ");
     resposta = resposta.toLowerCase();
+
     if (resposta === 's') {
         let newName = prompt("Informe o novo nome: ");
             if (!validarNome(newName)){
@@ -175,11 +176,17 @@ function removerPorId () {// Esta função serve para remover o aluno existente.
     resposta = resposta.toLowerCase();
 
     const indice = alunos.findIndex(a => a.id === id_aluno);
-    if (resposta === 's') {
-        alunos.splice(indice, 1);
-        console.log("");
-        console.log("Aluno Removido com sucesso!!");
-        salvar(); //salva a remoção
+    if(indice === -1){
+        console.log("Aluno não existe! Tente novamente");
+        return;
+    }
+    else {
+        if (resposta === 's') {
+            alunos.splice(indice, 1);
+            console.log("");
+            console.log("Aluno Removido com sucesso!!");
+            salvar(); //salva a remoção
+        };
     };
 };  
 
