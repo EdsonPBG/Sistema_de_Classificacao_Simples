@@ -1,26 +1,20 @@
 [
   {
-    "id": 1,
-    "name": "1234",
+    "id": 4,
+    "nome": "edson gomes",
     "nota": 10,
     "status": "Aprovado"
   },
   {
     "id": 2,
-    "name": "1234",
-    "nota": 10,
+    "nome": "agatta gomes",
+    "nota": 9,
     "status": "Aprovado"
   },
   {
     "id": 3,
-    "name": "1234",
-    "nota": 10,
-    "status": "Aprovado"
-  },
-  {
-    "id": 4,
-    "name": "1234",
-    "nota": 10,
+    "nome": "joao victor",
+    "nota": 7,
     "status": "Aprovado"
   }
 ]
