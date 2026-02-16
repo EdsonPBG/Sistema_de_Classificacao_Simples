@@ -1,5 +1,6 @@
 const prompt = require('prompt-sync')();
 const { listaAlunos, buscarPorId, editarPorId, removerPorId, cadastrarAlunos, ordenarAlunos } = require('./service/alunosService');
+const { gerarEstatisticaGeral } = require('./service/relatorioService');
 const { salvar, carregar } = require('./service/repository');
 
 carregar();
@@ -13,6 +14,7 @@ console.log("3. Buscar Alunos Por ID");
 console.log("4. Editar Aluno Por ID");
 console.log("5. Excluir Aluno Por ID");
 console.log("6. Ordenar Alunos");
+console.log("7. Relatorios");
 console.log("0. sair");
 console.log("");
     opcao = Number(prompt("Escolha um numero: "));
@@ -35,6 +37,9 @@ console.log("");
             break;
         case 6:
                 ordenarAlunos();
+            break;
+        case 7:
+                gerarEstatisticaGeral();
             break;
         case 0: 
                 console.log("Saindo...")
