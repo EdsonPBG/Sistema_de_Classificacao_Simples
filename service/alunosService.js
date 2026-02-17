@@ -1,7 +1,7 @@
 // alunosService.js
 const prompt = require('prompt-sync')();
-const { validarNome, validarNota, calcularStatus } = require('../utils/validacoes');
-const { salvar, obterAlunos, encontrarAlunoPorId, excluirAluno, adicionarAluno, encontraProximoId } = require('./repository'); 
+const { validarNome, validarNota, calcularStatus, validarCadastroNome, validarId } = require('../utils/validacoes');
+const { salvar, obterAlunos, encontrarAlunoPorId, excluirAluno, adicionarAluno, encontraProximoId, encontrarAlunoPorNome } = require('./repository'); 
 
 function listaAlunos () { // Esta função verifica se existem alunos no array, se existir mostrar todos os alunos
         const alunos = obterAlunos();
@@ -25,6 +25,9 @@ function listaAlunos () { // Esta função verifica se existem alunos no array, 
 
 function buscarPorId () { // Esta função tem o trabalho de procurar o aluno pelo id informado.
     const id_aluno = Number(prompt("Informe o ID do aluno para a busca: "));
+    if (!validarId(id_aluno)) {
+        return;
+    };
     const aluno = encontrarAlunoPorId(id_aluno);
     const alunos = obterAlunos()
     if (!alunos) {
@@ -52,6 +55,9 @@ function buscarPorId () { // Esta função tem o trabalho de procurar o aluno pe
 
 function editarPorId () { // Esta função tem o trabalho de editar o aluno procurando pelo id
     const id_aluno = Number(prompt("Informe o ID do aluno para a edição: "));
+    if (!validarId(id_aluno)) {
+        return;
+    };
     const aluno = encontrarAlunoPorId(id_aluno);
     const alunos = obterAlunos()
     if (!alunos) {
@@ -96,6 +102,9 @@ function editarPorId () { // Esta função tem o trabalho de editar o aluno proc
 
 function removerPorId () {// Esta função serve para remover o aluno existente.
     const id_aluno = Number(prompt("Informe o ID do aluno que deseja remover: "));
+    if (!validarId(id_aluno)) {
+        return;
+    };
     const aluno = encontrarAlunoPorId(id_aluno);
     const alunos = obterAlunos()
     if (!alunos) {
@@ -131,6 +140,9 @@ function removerPorId () {// Esta função serve para remover o aluno existente.
 function cadastrarAlunos () {
     let nome = String(prompt("Informe o nome do aluno: "));
     if (!validarNome(nome)) {
+        return;
+    };
+    if (!validarCadastroNome(nome)) {
         return;
     };
 
