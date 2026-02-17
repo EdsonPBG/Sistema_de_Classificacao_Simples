@@ -1,9 +1,22 @@
+const { encontrarAlunoPorNome } = require("../service/repository");
+
 function validarNome (nome) {
     if (nome.trim() === "" || !isNaN(nome) || nome.length < 3) {
         console.log("Erro: Nome invalido! Tente novamente");
         return false;
     };
         return true;
+};
+
+function validarCadastroNome (nome) {
+    const alunoExistente = encontrarAlunoPorNome(nome);
+    if (alunoExistente) {
+        console.log("");
+        console.log("ERRO: Aluno com nome já existente!!");
+        console.log("");
+        return false;
+    };
+    return true;
 };
 
 function validarNota (nota) { // Esta função tem o trabalho de validar se a nota esta entre 0 e 10, nada a mais nem a menos
@@ -14,6 +27,14 @@ function validarNota (nota) { // Esta função tem o trabalho de validar se a no
         };
     };
             return true;
+};
+
+function validarId (id) {
+if (Number.isNaN(id) || id <= 0) {
+        console.log("Erro: Id invalido! Tente novamente");
+        return false;
+    };
+        return true;
 };
 
 function calcularStatus (nota) { // Esta função tem o trabalho de verificar as notas e informar ao sistema a situação do aluno, com base nas notas
@@ -31,5 +52,7 @@ function calcularStatus (nota) { // Esta função tem o trabalho de verificar as
 module.exports = { 
     validarNome, 
     validarNota, 
-    calcularStatus
+    calcularStatus,
+    validarCadastroNome,
+    validarId
 };
