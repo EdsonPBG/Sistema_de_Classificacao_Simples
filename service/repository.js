@@ -63,6 +63,13 @@ function adicionarAluno (aluno) {
     alunos.push(aluno);
 };
 
+function encontrarAlunoPorNome (nome) {
+    let aluno = obterAlunos();
+        return aluno.find(
+            aluno => aluno.nome.trim().toLowerCase() === nome.trim().toLowerCase()
+        );
+};
+
 function encontraProximoId () {
     let maiorId = 0;
     for(let i = 0; i < alunos.length; i++) {
@@ -81,4 +88,5 @@ module.exports = {
     excluirAluno,
     adicionarAluno,
     encontraProximoId,
+    encontrarAlunoPorNome
 };
