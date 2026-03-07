@@ -1,97 +1,84 @@
-# 📚 Sistema de Gerenciamento de Alunos (CLI)
+School Management CLI
+Sistema de linha de comando (CLI) para gestão escolar, desenvolvido em JavaScript puro. Este projeto evoluiu de um simples script de treino para uma aplicação modularizada com persistência de dados e lógica de relatórios.
 
-Projeto em **JavaScript (Node.js)** desenvolvido com foco em **treino de lógica de programação**, utilizando estruturas fundamentais como **if/else, loops, arrays, objetos e funções**.
+🚀 Evolução do Projeto
+Este repositório documenta minha jornada de aprendizado em lógica de programação e arquitetura back-end. O sistema foi construído incrementalmente:
 
-Este projeto está sendo construído de forma **progressiva**, dividido em dias de estudo, onde cada etapa adiciona novas funcionalidades e reforça conceitos básicos.
+Fase 1: CRUD básico em memória.
 
----
+Fase 2: Modularização e Separação de Responsabilidades (Services, Repository, Utils).
 
-## 🎯 Objetivo do Projeto
+Fase 3: Persistência de dados em arquivos JSON e Relatórios estatísticos.
 
-* Praticar lógica de programação
-* Fixar conceitos fundamentais do JavaScript
-* Desenvolver raciocínio para resolução de problemas
-* Criar uma base sólida antes de avançar para frameworks
+🛠️ Tecnologias e Arquitetura:
+O projeto foi estruturado seguindo princípios de Clean Code e separação de interesses:
 
----
+* Camada de Dados (Repository): Responsável por interagir com o sistema de arquivos (fs) e gerir a integridade do JSON.
 
-## 🛠️ Tecnologias Utilizadas
+* Camada de Negócio (Service): Onde residem as regras de aprovação, cálculos de média e lógica de ordenação.
 
-* JavaScript
-* Node.js
-* prompt-sync (entrada de dados via terminal)
+* Camada de Validação (Utils): Funções puras para garantir que nenhum dado inconsistente entre no sistema.
 
----
+*   Interface (Main/Index): Orquestração do fluxo de entrada do usuário.
 
-## 📂 Estrutura do Projeto
+✨ Funcionalidades Atuais:
+[x] Gestão de Alunos: Cadastro, Edição, Busca e Exclusão com confirmação.
 
-* CRUD completo de alunos em memória
-* Armazenamento em array de objetos
-* Menu interativo via terminal (CLI)
+[x] Persistência Local: Carregamento automático no início e salvamento ao sair.
 
----
+[x] Inteligência de ID: Algoritmo para garantir IDs únicos, mesmo após reiniciar o sistema.
 
-## ✅ Funcionalidades Implementadas
+[x] Relatórios Avançados:
 
-### 🔹 Dia 1
+Média geral da turma.
 
-* Cadastro de alunos
-* Validação de notas (0 a 10)
-* Cálculo de status:
+Identificação dinâmica de Melhor e Pior aluno (Top Performer).
 
-  * Aprovado
-  * Em Recuperação
-  * Reprovado
+[x] Ordenação Dinâmica: Visualização por ordem alfabética ou por desempenho (notas).
 
-### 🔹 Dia 2
+Fase 4: Refatoração para Programação Defensiva e Padronização de Respostas. Implementação de um protocolo de comunicação entre Service e Index, garantindo que a interface nunca manipule dados brutos diretamente.
 
-* Listagem de alunos cadastrados
-* Verificação de lista vazia
+✨ Funcionalidades Atuais (Melhoria de detalhe):
+Edição Inteligente: Sistema de atualização parcial (patch) que permite ao usuário alterar apenas campos específicos, mantendo os dados originais caso o campo seja deixado em branco.
 
-### 🔹 Dia 3
+Recálculo Automático: Inteligência de negócio que atualiza o status de aprovação em tempo real sempre que uma nota é editada.
 
-* Busca de aluno por ID
-* Validação de existência do aluno
+🧠 Desafios Superados (Adicione estes itens):
+Programação Defensiva: Implementação de validações condicionais no Service para proteger a integridade dos dados sem sacrificar a experiência do usuário (UX).
 
-### 🔹 Dia 4
+Desacoplamento (Layer Separation): Blindagem da camada de persistência, onde o index.js agora consome apenas resultados processados pelo Service, seguindo padrões de design de sistemas escaláveis.
 
-* Edição de aluno por ID
-  * Atualização de nome e nota
-  * Recalculo automático do status
-* Remoção de aluno por ID
-  * Confirmação antes da exclusão
-* Finalização do CRUD em memória (Create, Read, Update, Delete)
+📦 Como instalar e usar:
 
----
+Pré-requisitos: Ter o Node.js instalado.
 
-## 🚀 Como Executar o Projeto
+Instalação:
 
-1. Clone o repositório
-2. Entre na pasta do projeto
-3. Instale as dependências:
+Bash
+ npm install
+Execução:
 
-   npm install
+Bash
+ node index.js
 
-4. Execute o projeto:
+🧠 Desafios Superados (Log Técnico):
 
-   node index.js
+Sincronismo: Implementação de leitura/escrita síncrona para garantir a ordem das operações em CLI.
 
----
+Normalização de Dados: Tratamento de strings (trim/lowercase) para buscas robustas por nome.
 
-## 📌 Próximos Passos
+Tratamento de Exceções: Uso de blocos try/catch para evitar que o sistema quebre caso o arquivo de banco de dados seja deletado ou esteja vazio.
 
-* Refatoração e melhoria da organização do código
-* Melhorias nas validações
-* Persistência de dados
-* Evoluir para um sistema maior (ex: escola ou hospital)
-* Migração futura para API REST com Node.js/NestJS
+📈 Próximos Passos:
 
----
+[ ] Implementar escrita assíncrona para melhorar performance.
 
-## 🧠 Observação
+[ ] Adicionar testes unitários para os validadores.
 
-Este projeto faz parte de um **processo contínuo de aprendizado**, priorizando entendimento e prática ao invés de soluções prontas.
+[ ] Criar sistema de "Logs de Erro" em arquivo separado.
 
----
+[ ] Migração para TypeScript e, posteriormente, NestJS.
 
 ✍️ Desenvolvido por Edson Gomes
+
+"Estudando back-end para construir sistemas escaláveis e robustos."
