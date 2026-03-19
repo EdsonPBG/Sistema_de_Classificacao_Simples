@@ -1,6 +1,6 @@
 //  index.js
 const prompt = require('prompt-sync')();
-const { AlunosService } = './service/alunosService';
+const { AlunosService } = require('./service/alunosService');
 const { gerarEstatisticaGeral } = require('./service/relatorioService');
 const { salvar, carregar } = require('./service/repository');
 
@@ -64,9 +64,9 @@ console.log("");
             console.log("");
 
                 let resposta_edit = prompt("DESEJA CONTINUAR COM A EDIÇÃO? (S/N) ");
-                resposta = resposta_edit.toLowerCase();
+                resposta_edit = resposta_edit.toLowerCase();
 
-            if (resposta === 's') {
+            if (resposta_edit === 's') {
                 let newNome = prompt("Informe o novo nome: ");
                 let newNota = prompt("Informe a nova nota: ");
                 let novaNota = newNota === "" ? undefined : Number(newNota);

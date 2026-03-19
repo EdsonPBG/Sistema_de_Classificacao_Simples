@@ -1,7 +1,7 @@
 // alunosService.js
 const prompt = require('prompt-sync')();
 const { validarNome, validarNota, calcularStatus, validarCadastroNome, validarId } = require('../utils/validacoes');
-const { encontrarAlunoPorId, excluirAluno, adicionarAluno, encontraProximoId } = require('./repository'); 
+const { encontrarAlunoPorId, excluirAluno, adicionarAluno, encontraProximoId, obterAlunos } = require('./repository'); 
 
 class AlunosService {
     static cadastrar(nome, nota) {
@@ -70,7 +70,7 @@ class AlunosService {
     };
 
     static listaAlunos () { // Esta função verifica se existem alunos no array, se existir mostrar todos os alunos
-        const alunos = this.obterAlunos();
+        const alunos = obterAlunos();
         if (!alunos) {
             console.log("Não existem alunos cadastrados, por favor, cadastre!");
             return;
@@ -95,7 +95,7 @@ class AlunosService {
             return;
         };
         const aluno = encontrarAlunoPorId(id_aluno);
-        const alunos = this.obterAlunos()
+        const alunos = obterAlunos()
         if (!alunos) {
             console.log("Não existem alunos cadastrados, por favor, cadastre!");
             return;
@@ -129,7 +129,7 @@ class AlunosService {
     };
 
     static acharAlunos() {
-        const achado = this.obterAlunos();
+        const achado = obterAlunos();
 
         if (!achado) {
             return {sucesso: false, mensagem: "Não existem alunos cadastrados, por favor, cadastre!"};
@@ -138,24 +138,24 @@ class AlunosService {
     };
 
     static ordenarPorNome () {
-        const alunos = this.obterAlunos();
+        const alunos = obterAlunos();
         if (!alunos) {
                 console.log("Não existem alunos cadastrados, por favor, cadastre!");
             return;
         };
 
         alunos.sort((a, b) => (a.nome || "").localeCompare(b.nome || ""));
-        listaAlunos();
+        this.listaAlunos();
     };
 
     static ordenarPorNota () {
-        const alunos = this.obterAlunos();
+        const alunos = obterAlunos();
         if (!alunos) {
                 console.log("Não existem alunos cadastrados, por favor, cadastre!");
             return;
         };
         alunos.sort((a, b) => b.nota - a.nota);
-        listaAlunos();
+        this.listaAlunos();
     };
 
     static ordenarAlunos () {
@@ -188,4 +188,6 @@ class AlunosService {
 
 };
 
-module.exports = AlunosService
+module.exports = {
+    AlunosService
+};
