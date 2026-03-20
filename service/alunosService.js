@@ -6,13 +6,13 @@ const { encontrarAlunoPorId, excluirAluno, adicionarAluno, encontraProximoId, ob
 class AlunosService {
     static cadastrar(nome, nota) {
         if (!validarNome(nome)) {
-            return {sucesso: false, mensagem: "Falha na validação do nome"};
+            throw new Error("Falha na validação do nome: Nome muito curto ou inválido.");
         };
         if (!validarCadastroNome(nome)) {
-            return {sucesso: false, mensagem: "ERRO: ja existe aluno com esse nome"};
+            throw new Error("ERRO: Já existe um aluno com esse nome no sistema.");    
         };
         if (!validarNota(nota)){
-            return {sucesso: false, mensagem: "ERRO: Nota menor do que zero ou maior do que dez, tente novamente!"};
+            throw new Error("ERRO: Nota menor do que zero ou maior do que dez, tente novamente!");
         };
 
         let status = calcularStatus(nota);
@@ -25,10 +25,7 @@ class AlunosService {
         };
 
         adicionarAluno(aluno);
-        return {
-            sucesso: true, 
-            mensagem: "Aluno Cadastrado!"
-        };
+        return "Aluno Cadastrado!"
     };
 
     static editar(id, nome, nota) {
@@ -56,17 +53,14 @@ class AlunosService {
 
     static removerPorId (id) {// Esta função serve para remover o aluno existente.
         if (!validarId(id)) {
-            return {sucesso: false, mensagem: "Erro: Id invalido! Tente novamente"};
+            throw new Error("Erro: Id invalido! Tente novamente");
         };
 
         if (!excluirAluno(id)) {
-            return {sucesso: false, mensagem: "Erro"}
+            throw new Error("Erro: Falha ao tentar excluir o aluno");
         };
 
-        return{
-            sucesso: true, 
-            mensagem: "Aluno Excluido com sucesso!"
-        };
+        return "Aluno Excluido com sucesso!";
     };
 
     static listaAlunos () { // Esta função verifica se existem alunos no array, se existir mostrar todos os alunos
@@ -123,9 +117,9 @@ class AlunosService {
         const encontrado = encontrarAlunoPorId(id);
 
         if (!encontrado) {
-            return {sucesso: false, mensagem: `Aluno com o id: ${id} não encontrado! Tente novamente`};
+            throw new Error(`Aluno com o id: ${id} não encontrado! Tente novamente`);
         };
-            return {sucesso: true, dados: encontrado};
+            return encontrado;
     };
 
     static acharAlunos() {
