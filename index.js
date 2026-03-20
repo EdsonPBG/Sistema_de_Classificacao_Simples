@@ -22,15 +22,16 @@ console.log("");
 
     switch (opcao) {
         case 1: 
-            let nome = String(prompt("Informe o nome do aluno: "));
-            let nota = Number(prompt("Informe a nota do aluno (0 a 10): "));
+            try {
+                let nome = String(prompt("Informe o nome do aluno: "));
+                let nota = Number(prompt("Informe a nota do aluno (0 a 10): "));
 
-            const resultado = AlunosService.cadastrar(nome, nota);
-            console.log(resultado.mensagem);
-            
-            if (resultado.sucesso){
+                const mensagem = AlunosService.cadastrar(nome, nota);
+                console.log(mensagem);
                 salvar();
-            };
+            } catch (erro) {
+                console.error("ALERTA - " + erro.message)
+            }
             break;
         case 2:
                 AlunosService.listaAlunos();
@@ -80,19 +81,9 @@ console.log("");
             };
             break;
         case 5:
+        try {
             let id_aluno = Number(prompt("Informe o ID do aluno que deseja remover: "));
-            const achado = AlunosService.acharAlunos();
-                if (!achado.sucesso) {
-                    console.log(achado.mensagem);
-                    break;
-                };
-
-            const encontrado = AlunosService.encontrarAluno(id_aluno);
-                if (!encontrado.sucesso) {
-                    console.log(encontrado.mensagem);
-                    break;  
-                };
-            const aluno = encontrado.dados;
+            const aluno = AlunosService.encontrarAluno(id_aluno);
 
             console.log("");
             console.log("INFORMAÇÕES DO(A) ALUNO(A):");
@@ -103,14 +94,18 @@ console.log("");
             console.log(`--------------------------------------------------`);
             console.log("");
 
-            let resposta = prompt("DESEJA CONTINUAR COM A EXCLUSÃO? (S/N) ");
-            resposta = resposta.toLowerCase();
+            let resposta = prompt("DESEJA CONTINUAR COM A EXCLUSÃO? (S/N) ").toLowerCase()
 
                 if (resposta === 's') {
-                    const resultado = AlunosService.removerPorId(id_aluno);
-                    console.log(resultado.mensagem)
+                    const mensagem = AlunosService.removerPorId(id_aluno);
+                    console.log(mensagem)
                     salvar(); //salva a remoção
+                } else {
+                    console.log("Exclusão cancelada");
                 };
+        } catch (erro) {
+            console.error("ERRO NA OPERAÇÃO: " + erro.message); 
+        };
             break;
         case 6:
                 AlunosService.ordenarAlunos();
