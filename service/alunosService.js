@@ -31,24 +31,26 @@ class AlunosService {
     static editar(id, nome, nota) {
         const encontrado = encontrarAlunoPorId(id);
         if (!encontrado) {
-            return {sucesso: false, mensagem: `Aluno com o id: ${id} não encontrado! Tente novamente`};
+            throw new Error(`Aluno com o id: ${id} não encontrado! Tente novamente`);
         };
 
-        if (nome !== undefined && nome !== "") {
-            if (!validarNome(nome) || !validarCadastroNome(nome)) {
-                return {sucesso: false, mensagem: "Nome novo invalido ou já existente"};
+        if (nome && nome.trim() !== "") 
+        {
+            if (!validarCadastroNome(nome)) throw new Error("Nome novo invalido ou já existente"); 
+            { 
+                encontrado.nome = nome
             };
-            encontrado.nome = nome
         };
 
-        if (nota !== undefined && nota !== "") {
-            if (!validarNota(nota)) {
-                return {sucesso: false, mensagem: "Nova nota invalida"};
+        if (nota !== undefined && nota !== "") 
+        {
+            if (!validarNota(nota)) throw new Error("Nova nota invalida"); 
+            {
+                encontrado.nota = nota
+                encontrado.status = calcularStatus(encontrado.nota)
             };
-            encontrado.nota = nota
-            encontrado.status = calcularStatus(encontrado.nota)
         };
-        return {sucesso: true, mensagem: "Aluno editado com sucesso"};
+        return "Aluno editado com sucesso";
     };
 
     static removerPorId (id) {// Esta função serve para remover o aluno existente.
@@ -65,52 +67,30 @@ class AlunosService {
 
     static listaAlunos () { // Esta função verifica se existem alunos no array, se existir mostrar todos os alunos
         const alunos = obterAlunos();
-        if (!alunos) {
-            console.log("Não existem alunos cadastrados, por favor, cadastre!");
-            return;
-        };
-
-        for (let i = 0; i < alunos.length; i++) {
-            const aluno = alunos[i];
-            console.log("-- INFORMAÇÕES DO ALUNO(A):");
-            console.log("");
-            console.log(`ID: ${aluno.id}`);
-            console.log(`NOME: ${aluno.nome}`);
-            console.log(`NOTA: ${aluno.nota}`);
-            console.log(`STATUS: ${aluno.status}`);
-            console.log(`--------------------------------------------------`);
-            console.log("")
-        };
+        if (!alunos || alunos.length === 0) 
+        {
+            throw new Error("Não existem alunos cadastrados, por favor, cadastre!");
+        }
+        return alunos;
     };
 
-    static buscarPorId () { // Esta função tem o trabalho de procurar o aluno pelo id informado.
-        const id_aluno = Number(prompt("Informe o ID do aluno para a busca: "));
-        if (!validarId(id_aluno)) {
-            return;
-        };
-        const aluno = encontrarAlunoPorId(id_aluno);
+    static buscarPorId (id) { // Esta função tem o trabalho de procurar o aluno pelo id informado.
         const alunos = obterAlunos()
-        if (!alunos) {
-            console.log("Não existem alunos cadastrados, por favor, cadastre!");
+
+        if (!validarId(id)) {
             return;
         };
+        const aluno = encontrarAlunoPorId(id);
 
-        if (aluno) {
-            console.log("-- INFORMAÇÕES DO ALUNO(A):");
-            console.log("");
-            console.log(`ID: ${aluno.id}`);
-            console.log(`NOME: ${aluno.nome}`);
-            console.log(`NOTA: ${aluno.nota}`);
-            console.log(`STATUS: ${aluno.status}`);
-            console.log(`--------------------------------------------------`);
-            console.log("")
-            return;
+        if (!alunos) {
+            throw new Error("Não existem alunos cadastrados, por favor, cadastre!");
         };
 
         if (!aluno) { // Essa verificação serve para identificar que o aluno não foi encontrado ou id não existe
-                console.log(`Aluno com o id: ${id_aluno} não encontrado! Tente novamente`);
-                return;
+                throw new Error(`Aluno com o id: ${id} não encontrado! Tente novamente`);
         };
+
+        return aluno;
     };
 
     static encontrarAluno(id) {
@@ -126,58 +106,43 @@ class AlunosService {
         const achado = obterAlunos();
 
         if (!achado) {
-            return {sucesso: false, mensagem: "Não existem alunos cadastrados, por favor, cadastre!"};
+            throw new Error("Não existem alunos cadastrados, por favor, cadastre!");
         };
-            return {sucesso: true};
+            return achado;
     };
 
     static ordenarPorNome () {
         const alunos = obterAlunos();
         if (!alunos) {
-                console.log("Não existem alunos cadastrados, por favor, cadastre!");
-            return;
+            throw new Error("Não existem alunos cadastrados, por favor, cadastre!");
         };
 
-        alunos.sort((a, b) => (a.nome || "").localeCompare(b.nome || ""));
-        this.listaAlunos();
+        return[...alunos].sort((a, b) => (a.nome || "").localeCompare(b.nome || ""));
     };
 
     static ordenarPorNota () {
         const alunos = obterAlunos();
         if (!alunos) {
-                console.log("Não existem alunos cadastrados, por favor, cadastre!");
-            return;
+            throw new Error("Não existem alunos cadastrados, por favor, cadastre!");
         };
-        alunos.sort((a, b) => b.nota - a.nota);
-        this.listaAlunos();
+        return [...alunos].sort((a, b) => b.nota - a.nota);
     };
 
-    static ordenarAlunos () {
-        let opcao;
-        do {
-            console.log("");
-            console.log("-- OPÇÕES PARA ORDENAÇÃO --");
-            console.log("");
-            console.log("1. Ordenar por Nome");
-            console.log("2. Ordenar por Nota");
-            console.log("0. Sair");
-            opcao = Number(prompt("Escolha um numero: "));
-            console.log("");
-            switch (opcao) {
-                case 1:
-                        this.ordenarPorNome();
-                    break;
-                case 2:
-                        this.ordenarPorNota();
-                    break;
-                case 0:
-                        console.log("Saindo...");
-                    break;
-                default:
-                    console.log("Opção incorreta, escolha a opção certa!");
-                
-            };
-        } while (opcao !== 0);
+    static ordenarAlunos (opcao) {
+        const alunos = obterAlunos()
+        if (alunos.length === 0) throw new Error("Lista Vazia!")
+            
+        switch (opcao) {
+            case 1:
+                   return this.ordenarPorNome();
+            case 2:
+                   return this.ordenarPorNota();
+            case 0:
+                    console.log("Saindo...");
+                break;
+            default:
+                throw new Error("Opção incorreta, escolha a opção certa!");
+        };
     };
 
 };
