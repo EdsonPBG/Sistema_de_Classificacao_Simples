@@ -1,8 +1,8 @@
 //  index.js
 const prompt = require('prompt-sync')();
 const { AlunosService } = require('./service/alunosService');
-const { gerarEstatisticaGeral } = require('./service/relatorioService');
-const { salvar, carregar } = require('./service/repository');
+const { relatorioService } = require('./service/relatorioService');
+const { salvar, carregar} = require('./service/repository');
 
 carregar();
 let opcao;
@@ -34,50 +34,74 @@ console.log("");
             }
             break;
         case 2:
-                AlunosService.listaAlunos();
+            try{
+                const alunos = AlunosService.listaAlunos()
+
+                alunos.forEach(aluno => {
+                    console.log("-- INFORMAÇÕES DO ALUNO(A):");
+                    console.log("");
+                    console.log(`ID: ${aluno.id}`);
+                    console.log(`NOME: ${aluno.nome}`);
+                    console.log(`NOTA: ${aluno.nota}`);
+                    console.log(`STATUS: ${aluno.status}`);
+                    console.log(`--------------------------------------------------`);
+                    console.log("")
+                });
+            } catch (erro) {
+                console.error("ALERTA - " + erro.message)
+            };
             break;
         case 3:
-                AlunosService.buscarPorId();
-            break;
-        case 4:
-            const idAluno = Number(prompt("Informe o ID do aluno para a edição: "));
+            try{    
+                let id_aluno = Number(prompt("Informe o ID do aluno para a busca: "));
+                const aluno = AlunosService.buscarPorId(id_aluno);
 
-            const alunos = AlunosService.acharAlunos()
-                if (!alunos.sucesso) {
-                    console.log(alunos.mensagem)
-                    break
-                };
-
-            const edit_encontrado = AlunosService.encontrarAluno(idAluno);
-                if (!edit_encontrado.sucesso) {
-                    console.log(edit_encontrado.mensagem);
+                if (aluno) {
+                    console.log("-- INFORMAÇÕES DO ALUNO(A):");
+                    console.log("");
+                    console.log(`ID: ${aluno.id}`);
+                    console.log(`NOME: ${aluno.nome}`);
+                    console.log(`NOTA: ${aluno.nota}`);
+                    console.log(`STATUS: ${aluno.status}`);
+                    console.log(`--------------------------------------------------`);
+                    console.log("");
                     break;
                 };
-            const edit_aluno = edit_encontrado.dados;
 
-            console.log("");
-            console.log("-- INFORMAÇÕES DO(A) ALUNO(A): --");
-            console.log(`ID: ${edit_aluno.id}`);
-            console.log(`NOME: ${edit_aluno.nome}`);
-            console.log(`NOTA: ${edit_aluno.nota}`);
-            console.log(`STATUS: ${edit_aluno.status}`);
-            console.log(`--------------------------------------------------`);
-            console.log("");
+            } catch (erro) {
+                console.error("ALERTA - " + erro.message)
+            };
+            break;
+        case 4:
+            try{
+                const idAluno = Number(prompt("Informe o ID do aluno para a edição: "));
+                const aluno = AlunosService.encontrarAluno(idAluno);
 
-                let resposta_edit = prompt("DESEJA CONTINUAR COM A EDIÇÃO? (S/N) ");
-                resposta_edit = resposta_edit.toLowerCase();
+                console.log("");
+                console.log("-- INFORMAÇÕES DO(A) ALUNO(A): --");
+                console.log(`ID: ${aluno.id}`);
+                console.log(`NOME: ${aluno.nome}`);
+                console.log(`NOTA: ${aluno.nota}`);
+                console.log(`STATUS: ${aluno.status}`);
+                console.log(`--------------------------------------------------`);
+                console.log("");
 
-            if (resposta_edit === 's') {
-                let newNome = prompt("Informe o novo nome: ");
-                let newNota = prompt("Informe a nova nota: ");
-                let novaNota = newNota === "" ? undefined : Number(newNota);
+                let resposta_edit = prompt("DESEJA CONTINUAR COM A EDIÇÃO? (S/N) ").toLowerCase();
 
-                const resultado = AlunosService.editar(idAluno, newNome, novaNota);
-                console.log(resultado.mensagem)
+                if (resposta_edit === 's') {
+                    let newNome = prompt("Informe o novo nome: ");
+                    let newNota = prompt("Informe a nova nota: ");
+                    let novaNota = newNota === "" ? undefined : Number(newNota);
 
-                if (resultado.sucesso){
-                    salvar(); //salva a edição
-                };
+                    const mensagem = AlunosService.editar(idAluno, newNome, novaNota);
+                    console.log(mensagem)
+
+                    if (mensagem){
+                        salvar(); //salva a edição
+                    };
+                }
+            } catch (erro) {
+                console.error("ALERTA - " + erro.message)
             };
             break;
         case 5:
@@ -108,10 +132,62 @@ console.log("");
         };
             break;
         case 6:
-                AlunosService.ordenarAlunos();
+            try
+            {
+                console.log("");
+                console.log("-- OPÇÕES PARA ORDENAÇÃO --");
+                console.log("");
+                console.log("1. Ordenar por Nome");
+                console.log("2. Ordenar por Nota");
+                console.log("0. Sair");
+
+                let opcao = Number(prompt("Escolha um numero: "));
+                console.log("");
+
+                const listaOrdenada = AlunosService.ordenarAlunos(opcao);
+
+                listaOrdenada.forEach(aluno => {
+                    console.log(`[${aluno.id}] ${aluno.nome} - NOTA: ${aluno.nota}`)
+                });
+            } 
+            catch (erro) 
+            {
+                console.error("ALERTA - " + erro.message)
+            }
             break;
         case 7:
-                gerarEstatisticaGeral();
+            try
+            {
+                let opcao;
+                do 
+                {
+                    console.log("");
+                    console.log("-- OPÇÕES PARA RELATORIOS --");
+                    console.log("");
+                    console.log("1. Relatorio de media geral");
+                    console.log("2. Relatorio do melhor aluno e do pior aluno");
+                    console.log("0. Sair");
+
+                    opcao = Number(prompt("Escolha um numero: "));
+                    console.log("");
+
+                    if (opcao === 1) 
+                    {
+                        const media = relatorioService.mediaGeral();
+                        console.log(`A média geral da turma é ${media}`);
+                    }
+                    else if (opcao === 2)
+                    {
+                        const {melhor, pior} = relatorioService.melhorPiorAluno();
+                        console.log(`MELHOR: ${melhor.nome} (${melhor.nota})`);
+                        console.log(`PIOR: ${pior.nome} (${pior.nota})`);
+                    }
+                } while (opcao !== 0);
+            } 
+            catch (erro) 
+            {
+                console.error("ALERTA - " + erro.message)
+            };
             break;
         case 0: 
                 console.log("Saindo...")
