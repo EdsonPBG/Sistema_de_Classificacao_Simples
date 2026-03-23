@@ -1,9 +1,36 @@
 const express = require('express');
 const app = express();
 const port = 3000;
+const { AlunosService } = require('./service/alunosService');
+const { carregar } = require('./service/repository');
 
-app.get('/', (req, res) => {
-    res.send('<h1> Servidor de alunos online! </h1> <p>O back - end esta rodando</p>')
+carregar()
+app.get('/alunos', (req, res) => {
+    try
+    {
+        console.log("iniciando a procura...")
+        const valorRecebido = AlunosService.acharAlunos()
+        res.json(valorRecebido)
+    } 
+    catch (erro) 
+    {
+        console.error("status 404")
+        res.status(404).json({ menssagem: erro.message});
+    }
+});
+
+app.get('/alunos/:id', (req, res) => {
+    try
+    {
+        const id = req.params.id
+        const id_tratado = Number(id)
+        const alunoEncontrado = AlunosService.buscarPorId(id_tratado)
+        res.json(alunoEncontrado)
+    }
+    catch (erro) 
+    {
+        res.status(404).json({ menssagem: erro.message})
+    }
 });
 
 app.listen(port, () => {
