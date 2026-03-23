@@ -77,9 +77,7 @@ class AlunosService {
     static buscarPorId (id) { // Esta função tem o trabalho de procurar o aluno pelo id informado.
         const alunos = obterAlunos()
 
-        if (!validarId(id)) {
-            return;
-        };
+        validarId(id)
         const aluno = encontrarAlunoPorId(id);
 
         if (!alunos) {
