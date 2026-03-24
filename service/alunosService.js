@@ -25,7 +25,7 @@ class AlunosService {
         };
 
         adicionarAluno(aluno);
-        return "Aluno Cadastrado!"
+        return aluno
     };
 
     static editar(id, nome, nota) {
