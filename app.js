@@ -49,6 +49,39 @@ app.post('/alunos', (req, res) => {
     };
 });
 
+app.delete('/alunos/:id', (req, res) => {
+    try
+    {
+        const id = req.params.id
+        const id_tratado = Number(id)
+        const deletar_aluno = AlunosService.removerPorId(id_tratado)
+        salvar();
+        res.json(deletar_aluno);
+    }
+    catch (erro)
+    {
+        res.status(404).json({ menssagem: erro.message })
+    };
+});
+
+app.put('/alunos/:id', (req, res) => {
+    try
+    {
+        const id = req.params.id
+        const id_tratado = Number(id)
+        const nome = req.body.nome
+        const nota = req.body.nota
+        const editar = AlunosService.editar(id_tratado, nome, nota);
+        salvar();
+        res.json(editar)
+        console.log(req.body);
+    }
+    catch (erro)
+    {
+        res.status(404).json({ menssagem: erro.message });
+    };
+});
+
 app.listen(port, () => {
     console.log(`\n✅ SUCESSO!`);
     console.log(`🌍 Servidor rodando em: http://localhost:${port}`);
