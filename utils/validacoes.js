@@ -1,5 +1,5 @@
 //validacoes.js
-const { encontrarAlunoPorNome, encontrarAlunoPorId } = require("../service/repository");
+const { encontrarAlunoPorNome, encontrarAlunoPorId } = require("../src/Services/repository");
 
 function validarNome (nome) {
     if (nome.trim() === "" || !isNaN(nome) || nome.length < 3) {
