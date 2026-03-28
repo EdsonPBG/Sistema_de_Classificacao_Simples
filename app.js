@@ -4,11 +4,13 @@ const port = 3000;
 const { carregar } = require('./src/Services/repository');
 const alunoRoutes = require('./src/Routes/alunoRoutes');
 const logMiddleware = require('./src/Middleware/logMiddleware');
+const erroMiddleware = require('./src/Middleware/erroMiddleware');
 app.use(express.json());
 app.use(logMiddleware)
 
 app.use('/alunos', alunoRoutes)
 
+app.use(erroMiddleware)
 app.listen(port, () => {
     carregar()
     console.log(`🌍 Servidor rodando em: http://localhost:${port}`);

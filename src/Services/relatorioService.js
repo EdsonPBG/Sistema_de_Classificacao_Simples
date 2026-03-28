@@ -42,6 +42,27 @@ class relatorioService
         };
             return { melhor: melhorAluno, pior: piorAluno };
     };
+
+    static filtroAvançado (status, turma) 
+    {
+        let lista = obterAlunos();
+            if (status) 
+            {
+                lista = lista.filter(a => a.status.toLowerCase() == status.toLowerCase());
+            };
+
+            if (turma)
+            {
+                lista = lista.filter(a => a.turma?.toLowerCase() == turma.toLowerCase());
+                if (lista.length == 0) 
+                {
+                    const erro = new Error("Nenhum aluno encontrado para essa turma");
+                    erro.status = 404;
+                    throw erro;
+                };
+            };
+            return lista;
+    };
 };
 
 module.exports = {

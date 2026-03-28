@@ -4,7 +4,7 @@ const { validarNome, validarNota, calcularStatus, validarCadastroNome, validarId
 const { encontrarAlunoPorId, excluirAluno, adicionarAluno, encontraProximoId, obterAlunos } = require('./repository'); 
 
 class AlunosService {
-    static cadastrar(nome, nota) {
+    static cadastrar(nome, nota, turma = "sem turma") {
         if (!validarNome(nome)) {
             throw new Error("Falha na validação do nome: Nome muito curto ou inválido.");
         };
@@ -19,6 +19,7 @@ class AlunosService {
 
         const aluno = {
             id: encontraProximoId(),
+            turma: turma,
             nome: nome,
             nota: nota,
             status: status
@@ -142,7 +143,6 @@ class AlunosService {
                 throw new Error("Opção incorreta, escolha a opção certa!");
         };
     };
-
 };
 
 module.exports = {

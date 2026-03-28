@@ -1,22 +1,26 @@
+const erroMiddleware = require("../Middleware/erroMiddleware");
 const { AlunosService } = require("../Services/alunosService");
+const { relatorioService } = require("../Services/relatorioService");
 const { salvar } = require("../Services/repository");
 
 class alunoController {
-    static listarTodos (req, res) 
+    static listarTodos (req, res, next) 
     {
         try
         {
             console.log("Iniciando busca...");
-            const alunos = AlunosService.acharAlunos();
+            const { status, turma } = req.query;
+            const alunos = relatorioService.filtroAvançado(status, turma);
             res.json(alunos);
         }
         catch (erro)
         {
-            res.status(404).json({ menssagem: erro.message });
+            erro.status = 404;
+            next(erro)
         };
     };
 
-    static encontrarPorId (req, res)
+    static encontrarPorId (req, res, next)
     {
         try
         {
@@ -27,27 +31,29 @@ class alunoController {
         }
         catch (erro)
         {
-            res.status(404).json({ menssagem: erro.message });
+            erro.status = 404;
+            next(erro)
         };
     };
 
-    static cadastrarAluno (req, res) 
+    static cadastrarAluno (req, res, next) 
     {
         try
         {
             console.log("Cadastrando aluno...");
-            const { nome, nota } = req.body;
-            const cadastro = AlunosService.cadastrar(nome, nota);
+            const { nome, nota, turma } = req.body;
+            const cadastro = AlunosService.cadastrar(nome, nota, turma);
             res.json(cadastro);
             salvar();
         }
         catch (erro)
         {
-            res.status(404).json({ menssagem: erro.message });
+            erro.status = 404;
+            next(erro)
         };
     };
 
-    static deletarAluno (req, res) 
+    static deletarAluno (req, res, next) 
     {
         try
         {
@@ -59,11 +65,12 @@ class alunoController {
         }
         catch (erro)
         {
-            res.status(404).json({ menssagem: erro.message });
+            erro.status = 404;
+            next(erro)
         };
     };
 
-    static editarAluno (req, res) 
+    static editarAluno (req, res, next) 
     {
         try
         {
@@ -76,7 +83,8 @@ class alunoController {
         }
         catch (erro)
         {
-            res.status(404).json({ menssagem: erro.message });
+            erro.status = 404;
+            next(erro);
         };
     };
 };
