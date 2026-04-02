@@ -1,84 +1,100 @@
-School Management CLI
-Sistema de linha de comando (CLI) para gestão escolar, desenvolvido em JavaScript puro. Este projeto evoluiu de um simples script de treino para uma aplicação modularizada com persistência de dados e lógica de relatórios.
+# School Management API
+Sistema de gestão escolar que evoluiu de uma ferramenta de linha de comando (CLI) para uma **API RESTful** robusta, desenvolvida em Node.js com persistência em banco de dados relacional e arquitetura em camadas.
 
 🚀 Evolução do Projeto
 Este repositório documenta minha jornada de aprendizado em lógica de programação e arquitetura back-end. O sistema foi construído incrementalmente:
 
-Fase 1: CRUD básico em memória.
-
-Fase 2: Modularização e Separação de Responsabilidades (Services, Repository, Utils).
-
-Fase 3: Persistência de dados em arquivos JSON e Relatórios estatísticos.
+* **Fase 1:** CRUD básico em memória.
+* **Fase 2:** Modularização e Separação de Responsabilidades (Services, Repository, Utils).
+* **Fase 3:** Persistência de dados em arquivos JSON e Relatórios estatísticos.
+* **Fase 4:** Migração para API Web (Express), implementação de Middlewares (Log, Autenticação, Tratamento de Erro Global) e banco de dados relacional.
 
 🛠️ Tecnologias e Arquitetura:
-O projeto foi estruturado seguindo princípios de Clean Code e separação de interesses:
+O projeto foi estruturado seguindo princípios de Clean Code, Programação Defensiva e separação de interesses em camadas:
 
-* Camada de Dados (Repository): Responsável por interagir com o sistema de arquivos (fs) e gerir a integridade do JSON.
-
-* Camada de Negócio (Service): Onde residem as regras de aprovação, cálculos de média e lógica de ordenação.
-
-* Camada de Validação (Utils): Funções puras para garantir que nenhum dado inconsistente entre no sistema.
-
-*   Interface (Main/Index): Orquestração do fluxo de entrada do usuário.
+* **Node.js & Express:** Core da aplicação para criação do servidor e gerenciamento de rotas.
+* **MySQL & Driver `mysql2`:** Persistência de dados relacional utilizando pool de conexões e suporte a Promises (`async/await`).
+* **Camada de Rotas (Routes):** Mapeamento dos endpoints da API.
+* **Camada de Controle (Controllers):** Orquestração das requisições e respostas HTTP (sem lógica de negócio).
+* **Camada de Negócio (Services):** Onde residem as regras de aprovação, cálculos e a construção de consultas SQL dinâmicas e seguras.
+* **Camada de Validação (Utils):** Funções puras para garantir que nenhum dado inconsistente entre no sistema.
+* **Middlewares:** Interceptadores globais para autenticação por cabeçalho, logs de requisições e tratamento centralizado de exceções.
 
 ✨ Funcionalidades Atuais:
-[x] Gestão de Alunos: Cadastro, Edição, Busca e Exclusão com confirmação.
+- [x] **Gestão de Alunos:** Cadastro, Edição, Busca e Exclusão direto no banco de dados.
+- [x] **Busca Avançada:** Filtros dinâmicos por Turma e Status montados direto na Query SQL para maior performance.
+- [x] **Segurança:** Uso de *Prepared Statements* (`?`) nas queries para prevenção contra ataques de *SQL Injection*.
+- [x] **Edição Inteligente:** Sistema de atualização parcial (*patch*) que mantém os dados originais caso o campo seja deixado em branco.
+- [x] **Recálculo Automático:** Inteligência de negócio que atualiza o status de aprovação em tempo real sempre que uma nota é editada.
 
-[x] Persistência Local: Carregamento automático no início e salvamento ao sair.
+🧠 Desafios Superados (Log Técnico):
+- **Desacoplamento (Layer Separation):** Blindagem das camadas onde o Controller apenas consome resultados processados pelo Service, permitindo que o sistema seja escalável.
+- **Tratamento de Exceções Global:** Implementação de um Middleware de Erro Global que captura falhas em qualquer ponto do fluxo, padroniza a resposta e evita que o servidor caia.
+- **Queries Dinâmicas:** Construção de SQL dinâmico usando `WHERE 1=1` para concatenar filtros opcionais de forma limpa.
 
-[x] Inteligência de ID: Algoritmo para garantir IDs únicos, mesmo após reiniciar o sistema.
+📂 Estrutura do Projeto
+media_alunos/
+├── DataBase/
+│   └── database.js      # Pool de conexão com o MySQL
+├── src/
+│   ├── Controllers/     # Gerenciamento de fluxo HTTP
+│   ├── Middleware/      # Segurança, logs e erros globais
+│   ├── Routes/          # Definição dos caminhos da API
+│   ├── Services/        # Regras de negócio e consultas SQL
+│   └── utils/           # Validadores puros
+├── app.js               # Configuração do Express
+├── index.js             # Inicialização do servidor
+└── README.MD
 
-[x] Relatórios Avançados:
-
-Média geral da turma.
-
-Identificação dinâmica de Melhor e Pior aluno (Top Performer).
-
-[x] Ordenação Dinâmica: Visualização por ordem alfabética ou por desempenho (notas).
-
-Fase 4: Refatoração para Programação Defensiva e Padronização de Respostas. Implementação de um protocolo de comunicação entre Service e Index, garantindo que a interface nunca manipule dados brutos diretamente.
-
-✨ Funcionalidades Atuais (Melhoria de detalhe):
-Edição Inteligente: Sistema de atualização parcial (patch) que permite ao usuário alterar apenas campos específicos, mantendo os dados originais caso o campo seja deixado em branco.
-
-Recálculo Automático: Inteligência de negócio que atualiza o status de aprovação em tempo real sempre que uma nota é editada.
-
-🧠 Desafios Superados (Adicione estes itens):
-Programação Defensiva: Implementação de validações condicionais no Service para proteger a integridade dos dados sem sacrificar a experiência do usuário (UX).
-
-Desacoplamento (Layer Separation): Blindagem da camada de persistência, onde o index.js agora consome apenas resultados processados pelo Service, seguindo padrões de design de sistemas escaláveis.
+🛣️ Rotas da API (Em desenvolvimento)
+| Método | Rota | Descrição | Parâmetros de Query (Opcionais) |
+| :--- | :--- | :--- | :--- |
+| GET | /alunos | Lista alunos com filtros | status, turma |
 
 📦 Como instalar e usar:
 
-Pré-requisitos: Ter o Node.js instalado.
+Pré-requisitos:
 
-Instalação:
+Ter o Node.js instalado.
+
+Ter o MySQL Server rodando na máquina.
+
+Passo a Passo:
+
+Clone o repositório para sua máquina.
+
+Instale as dependências do projeto:
 
 Bash
- npm install
-Execução:
+npm install
+Acesse o seu gerenciador do MySQL (Ex: MySQL Workbench) e crie o banco de dados e a tabela:
+
+SQL
+CREATE DATABASE escola;
+USE escola;
+
+CREATE TABLE alunos (
+  id_aluno INT AUTO_INCREMENT PRIMARY KEY,
+  nome_aluno VARCHAR(50) NOT NULL,
+  nota_aluno DECIMAL(4,2) NOT NULL,
+  turma_aluno VARCHAR(20) DEFAULT 'sem turma' NOT NULL,
+  status_aluno ENUM('aprovado', 'reprovado') NOT NULL
+);
+Configure suas credenciais de acesso ao banco (usuário e senha) no arquivo DataBase/database.js.
+
+Execute o projeto:
 
 Bash
- node index.js
-
-🧠 Desafios Superados (Log Técnico):
-
-Sincronismo: Implementação de leitura/escrita síncrona para garantir a ordem das operações em CLI.
-
-Normalização de Dados: Tratamento de strings (trim/lowercase) para buscas robustas por nome.
-
-Tratamento de Exceções: Uso de blocos try/catch para evitar que o sistema quebre caso o arquivo de banco de dados seja deletado ou esteja vazio.
-
+node index.js
 📈 Próximos Passos:
 
-[ ] Implementar escrita assíncrona para melhorar performance.
+[ ] Finalizar a migração das rotas de criação, edição e exclusão para SQL.
 
 [ ] Adicionar testes unitários para os validadores.
 
-[ ] Criar sistema de "Logs de Erro" em arquivo separado.
+[ ] Criar sistema de "Logs de Erro" salvos em arquivos físicos.
 
 [ ] Migração para TypeScript e, posteriormente, NestJS.
 
 ✍️ Desenvolvido por Edson Gomes
-
 "Estudando back-end para construir sistemas escaláveis e robustos."
