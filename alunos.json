@@ -2,19 +2,85 @@
   {
     "id": 4,
     "nome": "edson gomes",
+    "nota": 8,
+    "status": "Aprovado"
+  },
+  {
+    "id": 7,
+    "nome": "marcos",
     "nota": 10,
     "status": "Aprovado"
   },
   {
-    "id": 2,
-    "nome": "agatta gomes",
-    "nota": 9,
+    "id": 9,
+    "nome": "Edson",
+    "nota": 8,
     "status": "Aprovado"
   },
   {
-    "id": 3,
-    "nome": "joao victor",
+    "id": 10,
+    "nome": "Edson teste teste",
+    "nota": 1,
+    "status": "Reprovado"
+  },
+  {
+    "id": 11,
+    "nome": "reprovado",
+    "nota": 0,
+    "status": "Reprovado"
+  },
+  {
+    "id": 12,
+    "nome": "Claudio henrique",
     "nota": 7,
     "status": "Aprovado"
+  },
+  {
+    "id": 13,
+    "nome": "Claudio henrique1",
+    "nota": 7,
+    "status": "Aprovado"
+  },
+  {
+    "id": 14,
+    "turma": "A",
+    "nome": "Claudio henrique2",
+    "nota": 7,
+    "status": "Aprovado"
+  },
+  {
+    "id": 17,
+    "turma": "B",
+    "nome": "Claudio henrique5",
+    "nota": 7,
+    "status": "Aprovado"
+  },
+  {
+    "id": 18,
+    "turma": "A",
+    "nome": "Claudio henrique6",
+    "nota": 7,
+    "status": "Aprovado"
+  },
+  {
+    "id": 19,
+    "turma": "sem turma",
+    "nome": "edson 1",
+    "nota": 7,
+    "status": "Aprovado"
+  },
+  {
+    "id": 20,
+    "turma": "A",
+    "nome": "edson 2",
+    "nota": 10,
+    "status": "Aprovado"
+  },
+  {
+    "id": 21,
+    "turma": "B",
+    "nome": "edson 3",
+    "nota": 1,
+    "status": "Reprovado"
   }
 ]
