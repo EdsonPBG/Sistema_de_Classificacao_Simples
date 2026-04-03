@@ -4,18 +4,17 @@ const { relatorioService } = require("../Services/relatorioService");
 const { salvar } = require("../Services/repository");
 
 class alunoController {
-    static listarTodos (req, res, next) 
+    static async listarTodos (req, res, next) 
     {
         try
         {
             console.log("Iniciando busca...");
             const { status, turma } = req.query;
-            const alunos = relatorioService.filtroAvançado(status, turma);
+            const alunos = await relatorioService.filtroAvançado(status, turma);
             res.json(alunos);
         }
         catch (erro)
         {
-            erro.status = 404;
             next(erro)
         };
     };

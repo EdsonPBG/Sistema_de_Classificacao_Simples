@@ -1,5 +1,5 @@
 const express = require('express');
-const pool = require('./DataBase/database')
+const pool = require('./src/DataBase/database');
 const app = express();
 const port = 3000;
 const { carregar } = require('./src/Services/repository');

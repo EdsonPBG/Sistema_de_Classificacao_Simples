@@ -1,5 +1,6 @@
 //relatorioService.js
 const { obterAlunos } = require("./repository");
+const pool = require('../DataBase/database');
 class relatorioService
 {
     static mediaGeral () {
@@ -43,27 +44,34 @@ class relatorioService
             return { melhor: melhorAluno, pior: piorAluno };
     };
 
-    static filtroAvançado (status, turma) 
+static async filtroAvançado (status, turma) 
     {
-        let lista = obterAlunos();
+        let querySql = 'SELECT * FROM alunos WHERE 1 = 1';
+        let parametros = [];
+        
             if (status) 
             {
-                lista = lista.filter(a => a.status.toLowerCase() == status.toLowerCase());
+                querySql += ' AND status = ?';
+                parametros.push(status);
             };
 
             if (turma)
             {
-                lista = lista.filter(a => a.turma?.toLowerCase() == turma.toLowerCase());
-                if (lista.length == 0) 
+                querySql += ' AND turma = ?';
+                parametros.push(turma);
+            };
+            const [lista] = await pool.query(querySql, parametros);
+
+            if (lista.length == 0) 
                 {
                     const erro = new Error("Nenhum aluno encontrado para essa turma");
                     erro.status = 404;
                     throw erro;
                 };
-            };
+            
             return lista;
     };
-};
+}
 
 module.exports = {
     relatorioService
