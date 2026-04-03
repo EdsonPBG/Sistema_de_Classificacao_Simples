@@ -35,13 +35,13 @@ class alunoController {
         };
     };
 
-    static cadastrarAluno (req, res, next) 
+    static async cadastrarAluno (req, res, next) 
     {
         try
         {
             console.log("Cadastrando aluno...");
             const { nome, nota, turma } = req.body;
-            const cadastro = AlunosService.cadastrar(nome, nota, turma);
+            const cadastro = await AlunosService.cadastrar(nome, nota, turma);
             res.json(cadastro);
             salvar();
         }

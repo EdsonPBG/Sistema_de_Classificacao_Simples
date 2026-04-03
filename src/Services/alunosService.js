@@ -1,10 +1,11 @@
 // alunosService.js
 const prompt = require('prompt-sync')();
 const { validarNome, validarNota, calcularStatus, validarCadastroNome, validarId } = require('../../utils/validacoes');
+const pool = require('../DataBase/database');
 const { encontrarAlunoPorId, excluirAluno, adicionarAluno, encontraProximoId, obterAlunos } = require('./repository'); 
 
 class AlunosService {
-    static cadastrar(nome, nota, turma = "sem turma") {
+    static async cadastrar(nome, nota, turma = "sem turma") {
         if (!validarNome(nome)) {
             throw new Error("Falha na validação do nome: Nome muito curto ou inválido.");
         };
@@ -14,19 +15,18 @@ class AlunosService {
         if (!validarNota(nota)){
             throw new Error("ERRO: Nota menor do que zero ou maior do que dez, tente novamente!");
         };
-
         let status = calcularStatus(nota);
+        let querySql = 'INSERT INTO alunos (nome_aluno, nota_aluno, turma_aluno, status_aluno) VALUES (?,?,?,?)';
+        let parametros = [nome, nota, turma, status];
 
-        const aluno = {
-            id: encontraProximoId(),
-            turma: turma,
-            nome: nome,
-            nota: nota,
-            status: status
+        const [aluno] = await pool.query(querySql, parametros)
+        return {
+            id_aluno: aluno.insertId,
+            nome,
+            nota,
+            turma,
+            status    
         };
-
-        adicionarAluno(aluno);
-        return aluno
     };
 
     static editar(id, nome, nota) {
