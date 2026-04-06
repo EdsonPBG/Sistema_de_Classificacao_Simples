@@ -2,7 +2,7 @@
 const prompt = require('prompt-sync')();
 const { validarNome, validarNota, calcularStatus, validarCadastroNome, validarId } = require('../../utils/validacoes');
 const pool = require('../DataBase/database');
-const { encontrarAlunoPorId, excluirAluno, adicionarAluno, encontraProximoId, obterAlunos } = require('./repository'); 
+const { encontrarAlunoPorId, excluirAluno, adicionarAluno, encontraProximoId, obterAlunos, encontrarAlunoPorNome } = require('./repository'); 
 
 class AlunosService {
     static async cadastrar(nome, nota, turma = "sem turma") {
@@ -23,45 +23,43 @@ class AlunosService {
         return {
             id_aluno: aluno.insertId,
             nome,
-            nota,
+            nota, 
             turma,
             status    
         };
     };
 
-    static editar(id, nome, nota) {
-        const encontrado = encontrarAlunoPorId(id);
-        if (!encontrado) {
-            throw new Error(`Aluno com o id: ${id} não encontrado! Tente novamente`);
-        };
-
+    static async editar(id, nome, nota) {
         if (nome && nome.trim() !== "") 
-        {
-            if (!validarCadastroNome(nome)) throw new Error("Nome novo invalido ou já existente"); 
-            { 
-                encontrado.nome = nome
-            };
-        };
-
-        if (nota !== undefined && nota !== "") 
-        {
-            if (!validarNota(nota)) throw new Error("Nova nota invalida"); 
             {
-                encontrado.nota = nota
-                encontrado.status = calcularStatus(encontrado.nota)
+                if (!validarCadastroNome(nome)) throw new Error("Nome novo invalido ou já existente"); 
             };
-        };
-        return encontrado;
+
+            if (nota !== undefined && nota !== "") 
+            {
+                if (!validarNota(nota)) throw new Error("Nova nota invalida"); 
+            };
+            let novoStatus = calcularStatus(nota)
+
+        let querySql = 'UPDATE alunos SET nome_aluno = ?, nota_aluno = ?, status_aluno = ? WHERE id_aluno = ?';
+        let parametros = [nome, nota, novoStatus, id];
+        const [resultado] = await pool.query(querySql, parametros);
+            if(resultado.affectedRows === 0)
+            {
+                throw new Error(`Aluno com o id: ${id} não encontrado! Tente novamente`);
+            }
+
+        return { id, nome, nota, status: novoStatus };
     };
 
-    static removerPorId (id) {// Esta função serve para remover o aluno existente.
-        if (!validarId(id)) {
-            throw new Error("Erro: Id invalido! Tente novamente");
-        };
-
-        if (!excluirAluno(id)) {
-            throw new Error("Erro: Falha ao tentar excluir o aluno");
-        };
+    static async removerPorId (id) {// Esta função serve para remover o aluno existente.
+        let querySql = 'DELETE FROM alunos WHERE id_aluno = ?';
+        let parametros = [id];
+        const [resultado] = await pool.query(querySql, parametros);
+            if (resultado.affectedRows === 0) 
+            {
+                throw new Error(`Aluno com o id: ${id} não encontrado! Tente novamente`);
+            };
 
         return "Aluno Excluido com sucesso!";
     };

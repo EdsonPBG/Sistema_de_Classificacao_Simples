@@ -43,7 +43,6 @@ class alunoController {
             const { nome, nota, turma } = req.body;
             const cadastro = await AlunosService.cadastrar(nome, nota, turma);
             res.json(cadastro);
-            salvar();
         }
         catch (erro)
         {
@@ -52,33 +51,31 @@ class alunoController {
         };
     };
 
-    static deletarAluno (req, res, next) 
+    static async deletarAluno (req, res, next) 
     {
         try
         {
             console.log("Deletando aluno...")
             const id = Number(req.params.id);
-            const deletar = AlunosService.removerPorId(id);
+            const deletar = await AlunosService.removerPorId(id);
             res.json(deletar);
-            salvar();
         }
         catch (erro)
-        {
+        { 
             erro.status = 404;
             next(erro)
         };
     };
 
-    static editarAluno (req, res, next) 
+    static async editarAluno (req, res, next) 
     {
         try
         {
             const id = Number(req.params.id);
             const nome = req.body.nome;
             const nota = req.body.nota;
-            const editar = AlunosService.editar(id, nome, nota);
+            const editar = await AlunosService.editar(id, nome, nota);
             res.json(editar);
-            salvar();
         }
         catch (erro)
         {
