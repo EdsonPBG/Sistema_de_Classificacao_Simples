@@ -30,26 +30,23 @@ class AlunosService {
     };
 
     static async editar(id, nome, nota) {
-        if (nome && nome.trim() !== "") 
-            {
-                if (!validarCadastroNome(nome)) throw new Error("Nome novo invalido ou já existente"); 
-            };
+        const [alunoAtual] = await pool.query('SELECT * FROM alunos WHERE id_aluno = ?', [id]);
+        if (alunoAtual.length === 0) throw new Error("Id informado não existe!!");
 
-            if (nota !== undefined && nota !== "") 
-            {
-                if (!validarNota(nota)) throw new Error("Nova nota invalida"); 
-            };
-            let novoStatus = calcularStatus(nota)
+        let aluno = alunoAtual[0];
+        let novoNome = nome || aluno.nome_aluno
+        let novaNota = (nota !== undefined && nota !== "") ? nota : aluno.nota_aluno
+        let novoStatus = calcularStatus(novaNota)
 
         let querySql = 'UPDATE alunos SET nome_aluno = ?, nota_aluno = ?, status_aluno = ? WHERE id_aluno = ?';
-        let parametros = [nome, nota, novoStatus, id];
+        let parametros = [novoNome, novaNota, novoStatus, id];
         const [resultado] = await pool.query(querySql, parametros);
             if(resultado.affectedRows === 0)
             {
                 throw new Error(`Aluno com o id: ${id} não encontrado! Tente novamente`);
             }
 
-        return { id, nome, nota, status: novoStatus };
+        return { id, novoNome, novaNota, status: novoStatus };
     };
 
     static async removerPorId (id) {// Esta função serve para remover o aluno existente.
