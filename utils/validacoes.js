@@ -1,5 +1,5 @@
 //validacoes.js
-const { encontrarAlunoPorNome, encontrarAlunoPorId } = require("../src/Services/repository");
+const { alunoRepository } = require("../src/Services/repository");
 
 function validarNome (nome) {
     if (nome.trim() === "" || !isNaN(nome) || nome.length < 3) {
@@ -9,11 +9,11 @@ function validarNome (nome) {
 };
 
 function validarCadastroNome (nome) {
-    const alunoExistente = encontrarAlunoPorNome(nome);
+    const alunoExistente = alunoRepository.encontrarAlunoPorNome(nome);
     if (alunoExistente) {
         return false;
     };
-    return true;
+        return true;
 };
 
 function validarNota (nota) { // Esta função tem o trabalho de validar se a nota esta entre 0 e 10, nada a mais nem a menos
@@ -29,7 +29,7 @@ function validarId (id) {
 if (Number.isNaN(id) || id <= 0) {
         throw new Error("Id invalido!");
     };
-        return encontrarAlunoPorId(id);
+        return alunoRepository.encontrarAlunoPorId(id);
 };
 
 function calcularStatus (nota) { // Esta função tem o trabalho de verificar as notas e informar ao sistema a situação do aluno, com base nas notas

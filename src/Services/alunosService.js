@@ -2,7 +2,7 @@
 const prompt = require('prompt-sync')();
 const { validarNome, validarNota, calcularStatus, validarCadastroNome, validarId } = require('../../utils/validacoes');
 const pool = require('../DataBase/database');
-const { encontrarAlunoPorId, excluirAluno, adicionarAluno, encontraProximoId, obterAlunos, encontrarAlunoPorNome } = require('./repository'); 
+const alunoRepository = require('./src/Services/repository');
 
 class AlunosService {
     static async cadastrar(nome, nota, turma = "sem turma") {

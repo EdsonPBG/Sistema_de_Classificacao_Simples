@@ -1,92 +1,41 @@
 // repository.js
-const fs = require('fs');
+const pool = require ('../DataBase/database')
 
-let alunos = [];
-let proximoId = 1;
-
-function salvar () {
-    try{
-        fs.writeFileSync("alunos.json", JSON.stringify(alunos, null, 2));
-        console.log("Dados salvos com sucesso!!");
-    }
-    catch (erro) {
-        console.log("Erro ao salvar os dados!!");
+class alunoRepository {
+    static async obterAlunos() {
+        const [alunos] = await pool.query('SELECT * FROM alunos');
+            return (alunos.length === 0) ? false : alunos;
     };
-};
 
-function carregar () {
-    try{
-        if (!fs.existsSync("alunos.json")) {
-            alunos = [];
-            proximoId = 1;
-            return;
-        };
-
-        let conteudo = fs.readFileSync("alunos.json", "utf-8");
-
-        if (conteudo.trim() === "") {
-            alunos = [];
-            proximoId = 1;
-            return;
-        }
-        else {
-            alunos = JSON.parse(conteudo);
-            encontraProximoId()
-            console.log("carregando...");
-    };
-    } catch (erro){
-        console.log("Erro: Ocorreu um erro inesperado ao carregar");
-    };
-};
-
-function obterAlunos () {
-    if (alunos.length === 0) {
-            return false;
-        };
+    static async encontrarAlunoPorId(id) {
+        const [alunos] = await pool.query('SELECT * FROM alunos WHERE id_aluno = ?', [id]);
             return alunos;
-};
-
-function encontrarAlunoPorId(id) {
-    return alunos.find(aluno => aluno.id === id) || null;
-};
-
-function excluirAluno (id) {
-    const indice = alunos.findIndex(aluno => aluno.id === id);
-        if(indice >= 0){
-            alunos.splice(indice, 1);
-            return true;
-        };
-            return false;
-};
-
-function adicionarAluno (aluno) {
-    alunos.push(aluno);
-};
-
-function encontrarAlunoPorNome (nome) {
-    let aluno = obterAlunos();
-        return aluno.find(
-            aluno => aluno.nome.trim().toLowerCase() === nome.trim().toLowerCase()
-        );
-};
-
-function encontraProximoId () {
-    let maiorId = 0;
-    for(let i = 0; i < alunos.length; i++) {
-        if (alunos[i].id > maiorId) {
-            maiorId = alunos[i].id
-        };
     };
-    return maiorId + 1;
+
+    static async excluirAluno(id) {
+        const [alunos] = await pool.query('DELETE FROM alunos WHERE id_aluno = ?', [id]);
+            return alunos.affectedRows > 0 ? true : false;
+    };
+
+    static async adicionarAluno(nome, nota, turma, status) {
+        const querySql = 'INSERT INTO alunos(nome_aluno, nota_aluno, turma_aluno, status_aluno) VALUES (?,?,?,?)';
+        let [resultado] = await pool.query(querySql, [nome, nota, turma, status]);
+            return resultado.insertId
+    };
+
+    static async atualizarAluno(id, nome, nota, status) {
+        const querySql = 'UPADTE alunos SET nome_aluno = ?, nota_aluno = ?, status_aluno = ? WHERE id_aluno = ?';
+        const parametros = [nome, nota, status, id];
+        const [resultado] = await pool.query(querySql, parametros);
+            return (resultado.affectedRows > 0) ? true : false;
+    };
+
+    static async encontrarAlunoPorNome(nome) {
+        const [alunos] = await pool.query('SELECT * FROM alunos WHERE nome_aluno = ?', [nome]);
+            return (alunos.length > 0) ? alunos[0] : false;
+    };
 };
 
 module.exports = {
-    salvar,
-    carregar,
-    obterAlunos,
-    encontrarAlunoPorId,
-    excluirAluno,
-    adicionarAluno,
-    encontraProximoId,
-    encontrarAlunoPorNome
+    alunoRepository
 };

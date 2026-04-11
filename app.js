@@ -14,7 +14,6 @@ app.use('/alunos', alunoRoutes)
 app.use(erroMiddleware)
 
 app.listen(port, () => {
-    carregar()
     console.log(`🌍 Servidor rodando em: http://localhost:${port}`);
     console.log(`⌨️  Pressione CTRL + C para desligar o servidor.`);
 });
