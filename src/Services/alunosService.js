@@ -1,27 +1,19 @@
 // alunosService.js
 const prompt = require('prompt-sync')();
-const { validarNome, validarNota, calcularStatus, validarCadastroNome, validarId } = require('../../utils/validacoes');
+const { validacoes } = require('../../utils/validacoes');
 const pool = require('../DataBase/database');
-const alunoRepository = require('./src/Services/repository');
+const { alunoRepository } = require('./repository');
 
 class AlunosService {
     static async cadastrar(nome, nota, turma = "sem turma") {
-        if (!validarNome(nome)) {
-            throw new Error("Falha na validação do nome: Nome muito curto ou inválido.");
-        };
-        if (!validarCadastroNome(nome)) {
-            throw new Error("ERRO: Já existe um aluno com esse nome no sistema.");    
-        };
-        if (!validarNota(nota)){
-            throw new Error("ERRO: Nota menor do que zero ou maior do que dez, tente novamente!");
-        };
-        let status = calcularStatus(nota);
-        let querySql = 'INSERT INTO alunos (nome_aluno, nota_aluno, turma_aluno, status_aluno) VALUES (?,?,?,?)';
-        let parametros = [nome, nota, turma, status];
+        if (!validacoes.validarNome(nome)) throw new Error("Falha na validação do nome: Nome muito curto ou inválido.");
+        if (!(await validacoes.validarCadastroNome(nome))) throw new Error("ERRO: Já existe um aluno com esse nome no sistema.");    
+        if (!validacoes.validarNota(nota)) throw new Error("ERRO: Nota menor do que zero ou maior do que dez, tente novamente!");
 
-        const [aluno] = await pool.query(querySql, parametros)
+        let status = validacoes.calcularStatus(nota);
+        const aluno = await alunoRepository.adicionarAluno(nome, nota, turma, status)
         return {
-            id_aluno: aluno.insertId,
+            id_aluno: aluno,
             nome,
             nota, 
             turma,
@@ -30,21 +22,15 @@ class AlunosService {
     };
 
     static async editar(id, nome, nota) {
-        const [alunoAtual] = await pool.query('SELECT * FROM alunos WHERE id_aluno = ?', [id]);
-        if (alunoAtual.length === 0) throw new Error("Id informado não existe!!");
+        const aluno = await validacoes.validarId(id)
+        if (!aluno) throw new Error("Id informado não existe!!");
 
-        let aluno = alunoAtual[0];
-        let novoNome = nome || aluno.nome_aluno
-        let novaNota = (nota !== undefined && nota !== "") ? nota : aluno.nota_aluno
-        let novoStatus = calcularStatus(novaNota)
+        let novoNome = nome || aluno.nome_aluno;
+        let novaNota = (nota !== undefined && nota !== "") ? nota : aluno.nota_aluno;
+        let novoStatus = validacoes.calcularStatus(novaNota);
 
-        let querySql = 'UPDATE alunos SET nome_aluno = ?, nota_aluno = ?, status_aluno = ? WHERE id_aluno = ?';
-        let parametros = [novoNome, novaNota, novoStatus, id];
-        const [resultado] = await pool.query(querySql, parametros);
-            if(resultado.affectedRows === 0)
-            {
-                throw new Error(`Aluno com o id: ${id} não encontrado! Tente novamente`);
-            }
+        const resultado = await alunoRepository.atualizarAluno(id, novoNome, novaNota, novoStatus);
+            if(!resultado) throw new Error(`Erro ao atualizar os dados do banco`);
 
         return { id, novoNome, novaNota, status: novoStatus };
     };

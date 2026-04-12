@@ -1,38 +1,39 @@
 //validacoes.js
 const { alunoRepository } = require("../src/Services/repository");
 
-function validarNome (nome) {
-    if (nome.trim() === "" || !isNaN(nome) || nome.length < 3) {
-        return false;
-    };
-        return true;
-};
-
-function validarCadastroNome (nome) {
-    const alunoExistente = alunoRepository.encontrarAlunoPorNome(nome);
-    if (alunoExistente) {
-        return false;
-    };
-        return true;
-};
-
-function validarNota (nota) { // Esta função tem o trabalho de validar se a nota esta entre 0 e 10, nada a mais nem a menos
-    if (!isNaN(nota)) {
-        if (nota < 0 || nota > 10) {
+class validacoes {
+    static validarNome(nome) {
+        if (nome.trim() === "" || !isNaN(nome) || nome.length < 3) {
             return false;
         };
-    };
             return true;
-};
-
-function validarId (id) {
-if (Number.isNaN(id) || id <= 0) {
-        throw new Error("Id invalido!");
     };
-        return alunoRepository.encontrarAlunoPorId(id);
-};
 
-function calcularStatus (nota) { // Esta função tem o trabalho de verificar as notas e informar ao sistema a situação do aluno, com base nas notas
+    static async validarCadastroNome(nome) {
+        const alunoExistente = await alunoRepository.encontrarAlunoPorNome(nome);
+        if (alunoExistente) {
+            return false;
+        };
+            return true;
+    };
+
+    static validarNota (nota) { // Esta função tem o trabalho de validar se a nota esta entre 0 e 10, nada a mais nem a menos
+        if (!isNaN(nota)) {
+            if (nota < 0 || nota > 10) {
+                return false;
+            };
+        };
+                return true;
+    };
+
+    static async validarId(id) {
+        if (Number.isNaN(id) || id <= 0) {
+            return false;
+        };
+            return await alunoRepository.encontrarAlunoPorId(id);
+    };
+
+    static calcularStatus (nota) { // Esta função tem o trabalho de verificar as notas e informar ao sistema a situação do aluno, com base nas notas
         if (nota >= 7.0) {
             return "Aprovado";
         }
@@ -43,11 +44,7 @@ function calcularStatus (nota) { // Esta função tem o trabalho de verificar as
             return "Reprovado";
         };
     };
-
+}
 module.exports = { 
-    validarNome, 
-    validarNota, 
-    calcularStatus,
-    validarCadastroNome,
-    validarId
+    validacoes
 };
