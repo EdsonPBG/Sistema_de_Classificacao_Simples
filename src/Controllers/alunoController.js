@@ -4,7 +4,7 @@ const { relatorioService } = require("../Services/relatorioService");
 const { salvar } = require("../Services/repository");
 
 class alunoController {
-    static async listarTodos (req, res, next) 
+    static async listarTodos(req, res, next) 
     {
         try
         {
@@ -19,13 +19,13 @@ class alunoController {
         };
     };
 
-    static encontrarPorId (req, res, next)
+    static async encontrarPorId (req, res, next)
     {
         try
         {
             console.log("Encontrando aluno...");
             const id = Number(req.params.id);
-            const aluno = AlunosService.buscarPorId(id);
+            const aluno = await AlunosService.buscarPorId(id);
             res.json(aluno);
         }
         catch (erro)
@@ -40,8 +40,8 @@ class alunoController {
         try
         {
             console.log("Cadastrando aluno...");
-            const { nome, nota, turma } = req.body;
-            const cadastro = await AlunosService.cadastrar(nome, nota, turma);
+            const { nome, nota, turma, cpf, email } = req.body;
+            const cadastro = await AlunosService.cadastrar(nome, nota, turma, cpf, email);
             res.json(cadastro);
         }
         catch (erro)
@@ -74,12 +74,14 @@ class alunoController {
             const id = Number(req.params.id);
             const nome = req.body.nome;
             const nota = req.body.nota;
-            const editar = await AlunosService.editar(id, nome, nota);
+            const turma = req.body.turma;
+            const cpf = req.body.cpf;
+            const email = req.body.email;
+            const editar = await AlunosService.editar(id, nome, nota, turma, cpf, email);
             res.json(editar);
         }
         catch (erro)
         {
-            erro.status = 404;
             next(erro);
         };
     };

@@ -1,5 +1,5 @@
 //validacoes.js
-const { alunoRepository } = require("../src/Services/repository");
+const { alunoRepository } = require("../Services/repository");
 
 class validacoes {
     static validarNome(nome) {
@@ -30,7 +30,8 @@ class validacoes {
         if (Number.isNaN(id) || id <= 0) {
             return false;
         };
-            return await alunoRepository.encontrarAlunoPorId(id);
+            const rows = await alunoRepository.encontrarAlunoPorId(id);
+            return (rows.length > 0) ? rows[0] : null;
     };
 
     static calcularStatus (nota) { // Esta função tem o trabalho de verificar as notas e informar ao sistema a situação do aluno, com base nas notas
