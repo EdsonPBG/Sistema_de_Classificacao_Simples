@@ -5,7 +5,7 @@ const pool = require('../DataBase/database');
 const { alunoRepository } = require('./repository');
 
 class AlunosService {
-    static async cadastrar(nome, nota, turma = "sem turma", cpf, email) {
+    static async cadastrar(nome, nota, turma, cpf, email) {
         if (!validacoes.validarNome(nome)) throw new Error("Falha na validação do nome: Nome muito curto ou inválido.");
         if (!(await validacoes.validarCadastroNome(nome))) throw new Error("ERRO: Já existe um aluno com esse nome no sistema.");    
         if (!validacoes.validarNota(nota)) throw new Error("ERRO: Nota menor do que zero ou maior do que dez, tente novamente!");
@@ -60,6 +60,12 @@ class AlunosService {
     static async listaAlunos() { // Esta função verifica se existem alunos no array, se existir mostrar todos os alunos
         const alunos = await alunoRepository.obterAlunos();
         if (!alunos) throw new Error("Não existem alunos cadastrados, por favor, cadastre!");
+            return alunos;
+    };
+
+    static async listaAlunoComTurma() {
+        const alunos = await alunoRepository.obterAlunosComTurma();
+        if (alunos.length === 0) throw new Error("Não existem alunos cadastrados, por favor, cadastre!");
             return alunos;
     };
 

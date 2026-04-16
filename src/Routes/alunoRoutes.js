@@ -5,6 +5,7 @@ const alunoRoutes = Router();
 
 
 alunoRoutes.get('/', alunoController.listarTodos);
+alunoRoutes.get('/aluno-turma', alunoController.listarAlunosComTurma);
 alunoRoutes.get('/:id', alunoController.encontrarPorId);
 alunoRoutes.post('/', alunoController.cadastrarAluno);
 alunoRoutes.delete('/:id', authMiddleware, alunoController.deletarAluno);

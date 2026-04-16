@@ -1,7 +1,7 @@
 const erroMiddleware = require("../Middleware/erroMiddleware");
 const { AlunosService } = require("../Services/alunosService");
 const { relatorioService } = require("../Services/relatorioService");
-const { salvar } = require("../Services/repository");
+const { salvar, alunoRepository } = require("../Services/repository");
 
 class alunoController {
     static async listarTodos(req, res, next) 
@@ -11,6 +11,20 @@ class alunoController {
             console.log("Iniciando busca...");
             const { status, turma } = req.query;
             const alunos = await relatorioService.filtroAvançado(status, turma);
+            res.json(alunos);
+        }
+        catch (erro)
+        {
+            next(erro)
+        };
+    };
+
+    static async listarAlunosComTurma(req, res, next) 
+    {
+        try
+        {
+            console.log("Iniciando busca...");
+            const alunos = await AlunosService.listaAlunoComTurma();
             res.json(alunos);
         }
         catch (erro)
