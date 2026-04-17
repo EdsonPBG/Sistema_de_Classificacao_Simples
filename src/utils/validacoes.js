@@ -1,5 +1,5 @@
 //validacoes.js
-const { alunoRepository } = require("../Services/repository");
+const { alunoRepository } = require("../Modules/Alunos/Repository/alunoRepository");
 
 class validacoes {
     static validarNome(nome) {

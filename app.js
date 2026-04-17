@@ -2,14 +2,13 @@ const express = require('express');
 const pool = require('./src/DataBase/database');
 const app = express();
 const port = 3000;
-const { carregar } = require('./src/Services/repository');
-const alunoRoutes = require('./src/Routes/alunoRoutes');
 const logMiddleware = require('./src/Middleware/logMiddleware');
 const erroMiddleware = require('./src/Middleware/erroMiddleware');
+const Routers = require('./src/Routes/routes');
 app.use(express.json());
 app.use(logMiddleware)
 
-app.use('/alunos', alunoRoutes)
+app.use('/', Routers)
 
 app.use(erroMiddleware)
 
