@@ -1,5 +1,6 @@
 //validacoes.js
 const { alunoRepository } = require("../Modules/Alunos/Repository/alunoRepository");
+const { turmasRepository } = require("../Modules/Turmas/Repository/turmasRepository");
 
 class validacoes {
     static validarNome(nome) {
@@ -31,6 +32,14 @@ class validacoes {
             return false;
         };
             const rows = await alunoRepository.encontrarAlunoPorId(id);
+            return (rows.length > 0) ? rows[0] : null;
+    };
+
+    static async validarIdTurma(id) {
+        if (Number.isNaN(id) || id <= 0) {
+            return false;
+        };
+            const rows = await turmasRepository.encontrarTurmaPorId(id);
             return (rows.length > 0) ? rows[0] : null;
     };
 

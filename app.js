@@ -5,13 +5,12 @@ const port = 3000;
 const logMiddleware = require('./src/Middleware/logMiddleware');
 const erroMiddleware = require('./src/Middleware/erroMiddleware');
 const Routers = require('./src/Routes/routes');
+
+
 app.use(express.json());
 app.use(logMiddleware)
-
 app.use('/', Routers)
-
 app.use(erroMiddleware)
-
 app.listen(port, () => {
     console.log(`🌍 Servidor rodando em: http://localhost:${port}`);
     console.log(`⌨️  Pressione CTRL + C para desligar o servidor.`);
